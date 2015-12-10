@@ -23,8 +23,20 @@ fs.readdir(target, function (error, directoryList) {
 				var whatForBuffer = new Buffer(262);
 				fs.read(fileDescriptor, whatForBuffer, 0, 262, void 0, (function (index, error, bytesRead, buffer) {
 					if (error) return console.log("File read error:", error, directory);
-					var fileType = FileType(buffer);
+					var fileType = FileType(buffer),
+						spawn = require("child_process").spawn,
+						pythonSubProcess = spawn("python", ["test.py", directory]);
 					console.log(index+">fileType: "+(fileType && fileType.mime)+" file: "+directory+ " reads: "+bytesRead);
+					
+					pythonSubProcess.stdout.on("data", (function (index, data) {
+						console.log(index+" python>> "+data);
+					}).bind(void 0, index));
+					pythonSubProcess.stderr.on("data", (function (index, data) {
+						console.log(index+" python error>> ", data);
+					}).bind(void 0, index));
+					pythonSubProcess.on("close", (function (index, code) {
+						console.log(index+" python close>> ", code);
+					}).bind(void 0, index));
 					fs.close(fileDescriptor, function () {});
 				}).bind(void 0, index));
 			}).bind(void 0, index));
