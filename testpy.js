@@ -34,10 +34,8 @@ pythonSubProcess.on("close", (function (index, code) {
 // 62b09c9208053c600dc2e4f20f419eb4
 // var crypto = require("crypto");
 // var hashing = crypto.createHash("md5");
-// // stream.pipe(hashing);
 // stream.on("data", function (buffer) {
 // 	hashing.update(buffer);
-// });
-// stream.on("end", function() {
+// }).on("end", function() {
 // 	console.log(hashing.digest("hex"));
 // });
