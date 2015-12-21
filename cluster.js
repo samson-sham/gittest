@@ -21,7 +21,7 @@ if (cluster.isMaster) {
 	var readdir = q.nfbind(fs.readdir);
 	var readdirPromise = readdir(target);
 	readdirPromise.done(function (directoryList) {
-		console.log("Readdir resolved");
+		console.log("Readdir resolved", directoryList.length);
 		pool = directoryList;
 	});
 
@@ -42,7 +42,7 @@ if (cluster.isMaster) {
 	}
 
 	cluster.on('online', function (worker) {
-		console.log("Worker "+worker.process.pid+" online!");
+		console.log("Worker "+worker.id+" online!");
 		assignWork(worker);
 	});
 
@@ -52,7 +52,7 @@ if (cluster.isMaster) {
 	});
 
 	cluster.on('exit', function (worker, code, signal) {
-		console.log("Worker "+worker.process.pid+" died! code:", code, " signal:", signal);
+		console.log("Worker "+worker.id+" died! code:", code, " signal:", signal);
 		console.log("Existing workers:", Object.keys(cluster.workers).length);
 		readdirPromise.then(function() {
 			if (pool.length) {
@@ -68,14 +68,17 @@ if (cluster.isMaster) {
 
 	process.on('message', function (message) {
 		console.log("Worker received meesage");
-		if (!message) return process.exit(-1);
+		// if (!message) return process.exit(-1);
+		if (!message) return process.send(cluster.worker.id);
 		var file = target+'/'+message;
 		fs.stat(file, function (error, stats) {
 			if (error) {
 				console.log("File stat error:", error);
-				return process.exit(-2);
+				// return process.exit(-2);
+				return process.send(cluster.worker.id);
 			}
-			if (!stats.isFile()) return process.exit(-3);
+			// if (!stats.isFile()) return process.exit(-3);
+			if (!stats.isFile()) return process.send(cluster.worker.id);
 			var stream = fs.createReadStream(file),
 				hashing = crypto.createHash("md5");
 			stream.on('data', function (buffer) {
