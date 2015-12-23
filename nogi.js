@@ -106,6 +106,13 @@ stream.on('data', function (line) {
 	});
 });
 
+var MongoClient = require("mongodb").MongoClient;
+MongoClient.connect("mongodb://nogizaka:samson@ds061474.mongolab.com:61474/nogizaka", function (error, db) {
+	if (error) return console.log("Error:", error);
+	console.log("Database connected!");
+	db.close();
+});
+
 // gm("/Users/samson/Desktop/Screen Shot 2015-11-26 at 1.51.11 pm.png").size(function (error, size) {
 // 	if (error) return console.log("Error:", error);
 // 	console.log(size);
