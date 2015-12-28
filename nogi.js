@@ -76,7 +76,8 @@ stream.on('data', function (line) {
 				console.log(response.statusCode, src);
 				console.log(response.headers);
 				var cookie = response.headers['set-cookie'][0],
-					filename = url.parse($(this).attr("src")).pathname.replace(/blog|\/|\.(?=.*\.)/g,'');
+					pathname = url.parse($(this).attr("src")).pathname,
+					filename = pathname.replace(/blog|\/|\.(?=.*\.)/g,'');
 				src = url.parse(src.replace('img1', 'img2').replace('id=', 'sec_key='));
 				console.log(src);
 				// http.request({
@@ -105,7 +106,6 @@ stream.on('data', function (line) {
 		}
 	});
 });
-
 var MongoClient = require("mongodb").MongoClient;
 MongoClient.connect("%MONGO_PATH%", function (error, db) {
 	if (error) return console.log("Error:", error);
