@@ -107,7 +107,7 @@ stream.on('data', function (line) {
 });
 
 var MongoClient = require("mongodb").MongoClient;
-MongoClient.connect("mongodb://nogizaka:samson@ds061474.mongolab.com:61474/nogizaka", function (error, db) {
+MongoClient.connect("%MONGO_PATH%", function (error, db) {
 	if (error) return console.log("Error:", error);
 	console.log("Database connected!");
 	db.close();
